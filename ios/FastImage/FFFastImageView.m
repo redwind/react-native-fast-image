@@ -2,6 +2,8 @@
 
 @implementation FFFastImageView {
     BOOL hasSentOnLoadStart;
+    BOOL isComplete;
+    BOOL hasError;
 }
 
 - (void)setResizeMode:(RCTResizeMode)resizeMode
@@ -11,6 +13,21 @@
         self.contentMode = (UIViewContentMode)resizeMode;
     }
 }
+
+- (void)setOnFastImageLoadEnd:(RCTBubblingEventBlock)onFastImageLoadEnd {
+     _onFastImageLoadEnd = onFastImageLoadEnd;
+     if (isComplete) {
+         _onFastImageLoadEnd(@{});
+     }
+ }
+ 
+ - (void)setOnFastImageLoad:(RCTBubblingEventBlock)onFastImageLoad {
+     _onFastImageLoad = onFastImageLoad;
+     if (isComplete && hasError == NO) {
+         _onFastImageLoad(@{});
+     }
+ }
+ 
 
 - (void)setOnFastImageLoadStart:(RCTBubblingEventBlock)onFastImageLoadStart {
     if (_source && !hasSentOnLoadStart) {
@@ -25,6 +42,8 @@
 
 - (void)setSource:(FFFastImageSource *)source {
     if (_source != source) {
+        isComplete = NO;
+        hasError = NO;
         _source = source;
 
         // Set headers.
@@ -70,7 +89,9 @@
                                       NSError * _Nullable error,
                                       SDImageCacheType cacheType,
                                       NSURL * _Nullable imageURL) {
+                            isComplete = YES;              
                             if (error) {
+                                hasError = YES;
                                 if (_onFastImageError) {
                                     _onFastImageError(@{});
                                     if (_onFastImageLoadEnd) {
