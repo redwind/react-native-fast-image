@@ -178,8 +178,6 @@ class FastImageViewManager extends SimpleViewManager<ImageViewWithUrl> implement
         int viewId = view.getId();
         eventEmitter.receiveEvent(viewId, REACT_ON_LOAD_START_EVENT, new WritableNativeMap());
 
-<<<<<<< HEAD
-=======
         Glide
                 .with(view.getContext().getApplicationContext())
                 .load(glideUrl)
@@ -188,7 +186,6 @@ class FastImageViewManager extends SimpleViewManager<ImageViewWithUrl> implement
                 .placeholder(TRANSPARENT_DRAWABLE)
                 .listener(LISTENER)
                 .into(view);
->>>>>>> origin/master
     }
 
     @ReactProp(name = "resizeMode")
